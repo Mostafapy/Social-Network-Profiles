@@ -7,4 +7,7 @@ module.exports = {
   mongoDB: {
     uri: '<VALUE>',
   },
+  jwt: {
+    secret: '<VALUE>',
+  },
 };
