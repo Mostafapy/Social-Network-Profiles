@@ -8,6 +8,8 @@ const helmet = require('helmet');
 const cors = require('cors');
 const logger = require('./utils/logger')('Server');
 
+const connectMongoDB = require('./config/mongoDB');
+
 const app = express();
 
 // configration
@@ -27,6 +29,9 @@ app.use(
     ].join(' '),
   ),
 );
+
+// Connect Database
+connectMongoDB();
 
 app.use(cors());
 app.use(helmet());
