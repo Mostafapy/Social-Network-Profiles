@@ -6,7 +6,7 @@ const logger = require('../utils/logger')('Logic:UserCRUD');
  * @param {String} email
  * @returns {Promise | Error}
  */
-const checkUserExistance = async email => {
+const getUser = async email => {
   try {
     const user = await userModel.findOne({ email });
     return Promise.resolve(user);
@@ -40,4 +40,4 @@ const addNewUser = async (userName, userEmail, userAvatar, userPassword) => {
     return Promise.reject(new Error('Cannot Add a new user in mongoDB'));
   }
 };
-module.exports = { checkUserExistance, addNewUser };
+module.exports = { getUser, addNewUser };
