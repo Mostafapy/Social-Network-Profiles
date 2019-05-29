@@ -1,6 +1,10 @@
 const gravatar = require('gravatar');
-const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { promisify } = require('util');
+// configration
+const jwtConfig = require('config').get('jwt');
 
+const encryption = require('../utils/encryption');
 const userCRUDLogic = require('../logic/userCRUD');
 const logger = require('../utils/logger')('Controllers:UsersController');
 
@@ -8,7 +12,7 @@ const logger = require('../utils/logger')('Controllers:UsersController');
 const userRegistration = async (req, res) => {
   const { name, email, password } = req.body;
   try {
-    const existedUser = await userCRUDLogic.checkUserExistance(email);
+    const existedUser = await userCRUDLogic.getUser(email);
     if (existedUser) {
       return res.status(500).json({
         err: null,
@@ -18,19 +22,29 @@ const userRegistration = async (req, res) => {
     }
     const avatar = gravatar.url(email, { s: '200', r: 'pg', d: 'mm' });
 
-    const salt = await bcrypt.genSalt(10);
-
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await encryption.passwordHashing(password);
 
     await userCRUDLogic.addNewUser(name, email, avatar, hashedPassword);
+    // initalize payload
+    const user = await userCRUDLogic.getUser(email);
+
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    const jwtSign = promisify(jwt.sign);
+    const token = await jwtSign(payload, jwtConfig.secret, { expiresIn: 3600 });
 
     return res.status(200).json({
       err: null,
       msg: 'One User is registered successfully',
-      data: null,
+      data: { token },
     });
   } catch (err) {
     logger.error('@userRegistration [error: %0]', err.message);
+
     return res.status(500).json({
       err: 'Cannot register The Requested User',
       msg: 'Cannot register The Requested User',
