@@ -10,6 +10,12 @@ const logger = require('./utils/logger')('Server');
 
 const connectMongoDB = require('./config/mongoDB');
 
+// Routers
+const usersRouter = require('./routes/api/users');
+const authRouter = require('./routes/api/auth');
+const profileRouter = require('./routes/api/profile');
+const postsRouter = require('./routes/api/posts');
+
 const app = express();
 
 // configration
@@ -42,6 +48,12 @@ app.use(
     extended: false,
   }),
 );
+
+// Routes
+app.use('/api/auth', authRouter);
+app.use('/api/profiles', profileRouter);
+app.use('/api/posts', postsRouter);
+app.use('/api/users', usersRouter);
 
 // 404 error handler
 app.use((_req, res) => {
