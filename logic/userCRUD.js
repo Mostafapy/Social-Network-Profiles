@@ -2,7 +2,7 @@ const userModel = require('../models/userModel');
 const logger = require('../utils/logger')('Logic:UserCRUD');
 
 /**
- * functio to check if user exists in the mongoDB or not by checking of his/her email
+ * function to check if user exists in the mongoDB or not by checking of his/her email
  * @param {String} email
  * @returns {Promise | Error}
  */
@@ -11,7 +11,7 @@ const getUser = async email => {
     const user = await userModel.findOne({ email });
     return Promise.resolve(user);
   } catch (err) {
-    logger.error('@checkUserExistance [error: %0]', err.message);
+    logger.error('@getUser [error: %0]', err.message);
     return Promise.reject(
       new Error('Cannot complete finding the requested user in mongoDB'),
     );
@@ -40,4 +40,32 @@ const addNewUser = async (userName, userEmail, userAvatar, userPassword) => {
     return Promise.reject(new Error('Cannot Add a new user in mongoDB'));
   }
 };
-module.exports = { getUser, addNewUser };
+
+/**
+ *  Function to get the requested user by the id
+ * @param {String} id
+ * @returns {Promise | Error}
+ */
+
+const getUserById = async id => {
+  try {
+    const user = await userModel.findById(id).select('-password');
+
+    return Promise.resolve(user);
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      logger.error(
+        `@getUserById() [error: There is no template found in the database with the passed name]`,
+      );
+      return Promise.reject(new Error(`No Found Template`));
+    }
+
+    logger.error('@getUserById [error: %0]', err.message);
+    return Promise.reject(
+      new Error(
+        'Cannot complete finding the requested user by this Id in mongoDB',
+      ),
+    );
+  }
+};
+module.exports = { getUser, addNewUser, getUserById };
