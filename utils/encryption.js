@@ -14,7 +14,7 @@ const passwordHashing = async password => {
 
     return Promise.resolve(hashedPassword);
   } catch (err) {
-    logger.error('@passwordHashing [error: %0]', err.message);
+    logger.error('@passwordHashing() [error: %0]', err.message);
     return Promise.reject(new Error(' Cannot Hash This Password Text'));
   }
 };
@@ -29,7 +29,7 @@ const comparePasswordToHash = async (candidatePassword, hash) => {
   try {
     await bcrypt.compare(candidatePassword, hash);
   } catch (err) {
-    logger.error('@comparePasswordToHash [error: %0]', err.message);
+    logger.error('@comparePasswordToHash() [error: %0]', err.message);
     return Promise.reject(
       new Error(`Cannot Compare This Password to it's hash code`),
     );

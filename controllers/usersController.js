@@ -43,7 +43,7 @@ const userRegistration = async (req, res) => {
       data: { token },
     });
   } catch (err) {
-    logger.error('@userRegistration [error: %0]', err.message);
+    logger.error('@userRegistration() [error: %0]', err.message);
 
     return res.status(500).json({
       err: 'Cannot register The Requested User',

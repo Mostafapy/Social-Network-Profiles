@@ -11,7 +11,7 @@ const getUser = async email => {
     const user = await userModel.findOne({ email });
     return Promise.resolve(user);
   } catch (err) {
-    logger.error('@getUser [error: %0]', err.message);
+    logger.error('@getUser() [error: %0]', err.message);
     return Promise.reject(
       new Error('Cannot complete finding the requested user in mongoDB'),
     );
@@ -36,7 +36,7 @@ const addNewUser = async (userName, userEmail, userAvatar, userPassword) => {
     });
     return Promise.resolve();
   } catch (err) {
-    logger.error('@addNewUser [error: %0]', err.message);
+    logger.error('@addNewUser() [error: %0]', err.message);
     return Promise.reject(new Error('Cannot Add a new user in mongoDB'));
   }
 };
@@ -60,7 +60,7 @@ const getUserById = async id => {
       return Promise.reject(new Error(`No Found Template`));
     }
 
-    logger.error('@getUserById [error: %0]', err.message);
+    logger.error('@getUserById() [error: %0]', err.message);
     return Promise.reject(
       new Error(
         'Cannot complete finding the requested user by this Id in mongoDB',
