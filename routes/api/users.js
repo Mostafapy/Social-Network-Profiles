@@ -7,6 +7,6 @@ const router = express.Router();
 // [POST] api/users
 // @desc  Register user
 // @access Public
-router.post('/users', userRegistrationValidation, userCtrl.userRegistration);
+router.post('/', userRegistrationValidation, userCtrl.userRegistration);
 
 module.exports = router;

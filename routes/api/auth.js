@@ -8,15 +8,11 @@ const router = express.Router();
 // [GET] api/auth
 // @desc  authorization of users
 // @access Public
-router.get('/auth', isAuthorized, authController.manageAuthorization);
+router.get('/', isAuthorized, authController.manageAuthorization);
 
 // [POST] api/auth
 // @desc  authentication of users
 // @access Public
-router.post(
-  '/auth',
-  authRequestValidation,
-  authController.manageAuthentication,
-);
+router.post('/', authRequestValidation, authController.manageAuthentication);
 
 module.exports = router;
