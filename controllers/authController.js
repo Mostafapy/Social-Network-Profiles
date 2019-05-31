@@ -8,6 +8,7 @@ const encryption = require('../utils/encryption');
 const userCRUDLogic = require('../logic/userCRUD');
 const logger = require('../utils/logger')('Controllers:AuthController');
 
+// [GET] api/auth
 const manageAuthorization = async (req, res) => {
   try {
     const retrievedUser = await userCRUDLogic.getUserById(req.user.id);
@@ -29,6 +30,7 @@ const manageAuthorization = async (req, res) => {
   }
 };
 
+// [POST] api/auth
 const manageAuthentication = async (req, res) => {
   const { email, password } = req.body;
   try {
