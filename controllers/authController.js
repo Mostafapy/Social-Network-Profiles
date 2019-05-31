@@ -38,7 +38,7 @@ const manageAuthentication = async (req, res) => {
     if (!existedUser) {
       return res.status(500).json({
         err: null,
-        msg: 'Invaid Credentials',
+        msg: 'Invalid Credentials',
         data: null,
       });
     }
@@ -51,7 +51,7 @@ const manageAuthentication = async (req, res) => {
     if (!isMatch) {
       return res.status(500).json({
         err: null,
-        msg: 'Invaid Credentials',
+        msg: 'Invalid Credentials',
         data: null,
       });
     }
