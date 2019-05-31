@@ -23,9 +23,9 @@ const isAuthorized = (req, res, next) => {
   } catch (err) {
     logger.error('@addNewUser [error: %0]', err.message);
 
-    return res.status(500).json({
+    return res.status(401).json({
       err: null,
-      msg: 'Token Is Not Valid',
+      msg: 'Login timed out, Token hs expired, please login again.',
       data: null,
     });
   }
