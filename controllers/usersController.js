@@ -40,7 +40,7 @@ const userRegistration = async (req, res) => {
     return res.status(200).json({
       err: null,
       msg: 'One User is registered successfully',
-      data: { token },
+      data: token,
     });
   } catch (err) {
     logger.error('@userRegistration() [error: %0]', err.message);
