@@ -27,7 +27,9 @@ const passwordHashing = async password => {
  */
 const comparePasswordToHash = async (candidatePassword, hash) => {
   try {
-    await bcrypt.compare(candidatePassword, hash);
+    const matchingFlag = await bcrypt.compare(candidatePassword, hash);
+
+    return Promise.resolve(matchingFlag);
   } catch (err) {
     logger.error('@comparePasswordToHash() [error: %0]', err.message);
     return Promise.reject(
