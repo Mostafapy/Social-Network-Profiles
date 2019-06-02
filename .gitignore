@@ -21,6 +21,9 @@ package-lock.json
 .idea
 .vscode
 
+# Debug log from npm
+npm-debug.log
+
 
 # Compiled binary addons (http://nodejs.org/api/v1/addons.html)
 build/Release
