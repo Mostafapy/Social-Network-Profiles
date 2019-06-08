@@ -8,7 +8,7 @@ const logger = require('../utils/logger')('Logic:UserCRUD');
  */
 const getUser = async email => {
   try {
-    const user = await userModel.findOne({ email }, { _id: 0 });
+    const user = await userModel.findOne({ email });
     return Promise.resolve(user);
   } catch (err) {
     logger.error('@getUser() [error: %0]', err.message);
