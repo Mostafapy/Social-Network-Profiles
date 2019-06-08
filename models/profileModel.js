@@ -47,7 +47,7 @@ const profileSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  skils: {
+  skills: {
     type: [String],
     required: true,
   },
@@ -59,6 +59,7 @@ const profileSchema = new mongoose.Schema({
   },
   experience: [
     {
+      _id: false,
       title: {
         type: String,
         required: true,
