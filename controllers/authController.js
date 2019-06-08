@@ -19,7 +19,6 @@ const manageAuthorization = async (req, res) => {
       data: retrievedUser,
     });
   } catch (err) {
-    console.log('err');
     logger.error('@manageAuth [error: %0]', err.message);
 
     res.status(500).json({
