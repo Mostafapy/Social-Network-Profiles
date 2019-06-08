@@ -9,7 +9,11 @@ const router = express.Router();
 // [GET] api/profile/me
 // @desc  Get current user profile
 // @access Private
-router.get('/me', isAuthorized, profileController.userProfileRetriever);
+router.get(
+  '/me',
+  isAuthorized,
+  profileController.currentUserProfileRetrieverById,
+);
 
 // [POST] api/profile
 // @desc  Create or Update user Profile
@@ -20,5 +24,15 @@ router.post(
   createOrUpdateProfileValidation,
   profileController.userProfileCreatorOrUpdater,
 );
+
+// [GET] api/profile
+// @desc  Get all user profiles
+// @access Public
+router.get('/', profileController.allUserProfilesRetriever);
+
+// [GET] api/profile/user/:user_Id
+// @desc  Get all user profiles
+// @access Public
+router.get('/user/:user_Id', profileController.userProfileRetrieverByUserId);
 
 module.exports = router;
