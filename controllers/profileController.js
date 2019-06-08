@@ -2,9 +2,12 @@ const profileCRUDLogic = require('../logic/profileCRUD');
 const logger = require('../utils/logger')('Controllers:ProfileController');
 
 // [GET] api/profile/me
-const userProfileRetriever = async (req, res) => {
+const currentUserProfileRetrieverById = async (req, res) => {
   try {
-    const retrievedProfile = await profileCRUDLogic.getUserProfile(req.user.id);
+    const retrievedProfile = await profileCRUDLogic.getUserProfileById(
+      req.user.id,
+    );
+
     if (!retrievedProfile) {
       return res.status(401).json({
         err: null,
@@ -28,6 +31,7 @@ const userProfileRetriever = async (req, res) => {
   }
 };
 
+// [POST] api/profile/
 const userProfileCreatorOrUpdater = async (req, res) => {
   const {
     company,
@@ -85,4 +89,68 @@ const userProfileCreatorOrUpdater = async (req, res) => {
     });
   }
 };
-module.exports = { userProfileRetriever, userProfileCreatorOrUpdater };
+
+// [GET] api/profile/
+const allUserProfilesRetriever = async (req, res) => {
+  try {
+    const allProfiles = await profileCRUDLogic.getAllUserProfile();
+
+    return res.status(200).json({
+      err: null,
+      msg: 'All User Profiles are retrieved successfully',
+      data: allProfiles,
+    });
+  } catch (err) {
+    logger.error('@allUserProfilesRetriever() [error: %0]', err.message);
+
+    return res.status(500).json({
+      err: null,
+      msg: 'Cannot get User Profiles',
+      data: null,
+    });
+  }
+};
+
+// [GET] api/profile/user/:user_id
+const userProfileRetrieverByUserId = async (req, res) => {
+  try {
+    const retrievedProfile = await profileCRUDLogic.getUserProfileById(
+      req.params.user_id,
+    );
+
+    if (!retrievedProfile) {
+      return res.status(401).json({
+        err: null,
+        msg: 'There is no profile for the requested user id',
+        data: null,
+      });
+    }
+    return res.status(200).json({
+      err: null,
+      msg: 'The requested profile is retrieved successfully',
+      data: retrievedProfile,
+    });
+  } catch (err) {
+    logger.error('@userProfileRetriever() [error: %0]', err.message);
+
+    if (err.kind === 'ObjectId') {
+      return res.status(401).json({
+        err: null,
+        msg: 'There is no profile for the requested user id',
+        data: null,
+      });
+    }
+    return res.status(500).json({
+      err: null,
+      msg: 'Error In Retrieving User Profile',
+      data: null,
+    });
+  }
+};
+
+module.exports = {
+  currentUserProfileRetrieverById,
+  userProfileCreatorOrUpdater,
+  allUserProfilesRetriever,
+  userProfileRetrieverByUserId,
+};
