@@ -2,11 +2,11 @@ const profileModel = require('../models/profileModel');
 const logger = require('../utils/logger')('Logic:profileCRUD');
 
 /**
- * Function the retrieve user profile
+ * Function the retrieve user profile by id
  * @param {String} id
  * @returns {Promise | Error}
  */
-const getUserProfile = async id => {
+const getUserProfileById = async id => {
   try {
     const profile = await profileModel
       .findOne({ user: id })
@@ -60,4 +60,42 @@ const createOrUpdateProfile = async (id, fields) => {
   }
 };
 
-module.exports = { getUserProfile, createOrUpdateProfile };
+/**
+ * Function the retrieve all user profile
+ * @returns {Promise | Error}
+ */
+const getAllUserProfile = async () => {
+  try {
+    const profile = await profileModel
+      .findOne()
+      .populate('user', ['name', 'avatar']);
+
+    return Promise.resolve(profile);
+  } catch (err) {
+    logger.error('@getAllUserProfile() [error: %0]', err.message);
+
+    return Promise.reject(new Error('Cannot retrieve any profile in mongoDB'));
+  }
+};
+
+/**
+ * Function the delete profile
+ * @returns {Promise | Error}
+ */
+const deleteProfile = async id => {
+  try {
+    await profileModel.findOneAndRemove({ user: id });
+
+    return Promise.resolve();
+  } catch (err) {
+    logger.error('@deleteProfile() [error: %0]', err.message);
+
+    return Promise.reject(new Error('Cannot delete this profile in mongoDB'));
+  }
+};
+module.exports = {
+  getUserProfileById,
+  createOrUpdateProfile,
+  getAllUserProfile,
+  deleteProfile,
+};
