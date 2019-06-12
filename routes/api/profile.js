@@ -35,4 +35,9 @@ router.get('/', profileController.allUserProfilesRetriever);
 // @access Public
 router.get('/user/:user_Id', profileController.userProfileRetrieverByUserId);
 
+// [DELETE] api/profile
+// @desc  delete profile , user & posts
+// @access Private
+router.delete('/', isAuthorized, profileController.deleteProfileWithUser);
+
 module.exports = router;
