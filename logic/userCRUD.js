@@ -68,4 +68,20 @@ const getUserById = async id => {
     );
   }
 };
-module.exports = { getUser, addNewUser, getUserById };
+
+/**
+ * Function the delete user
+ * @returns {Promise | Error}
+ */
+const deleteUser = async id => {
+  try {
+    await userModel.findOneAndRemove({ _id: id });
+
+    return Promise.resolve();
+  } catch (err) {
+    logger.error('@deleteUser() [error: %0]', err.message);
+
+    return Promise.reject(new Error('Cannot delete this user in mongoDB'));
+  }
+};
+module.exports = { getUser, addNewUser, getUserById, deleteUser };
