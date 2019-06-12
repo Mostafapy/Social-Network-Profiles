@@ -58,6 +58,32 @@ app.use((_req, res) => {
   });
 });
 
+// Uncaught Exceptions Handler
+process.on('uncaughtException', ex => {
+  logger.error(ex.message, ex);
+  app.use((_req, res) => {
+    res.status(500).json({
+      err: null,
+      msg: '500 Internet Error',
+      data: null,
+    });
+  });
+  process.exit(1);
+});
+
+// Unhandled Promise Rejection Handler
+process.on('unhandledRejection', ex => {
+  logger.error(ex.message, ex);
+  app.use((_req, res) => {
+    res.status(500).json({
+      err: null,
+      msg: '500 Internet Error',
+      data: null,
+    });
+  });
+  process.exit(1);
+});
+
 // Port
 const port = appConfig.port || '3000';
 
