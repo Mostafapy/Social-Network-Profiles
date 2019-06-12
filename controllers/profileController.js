@@ -1,4 +1,5 @@
 const profileCRUDLogic = require('../logic/profileCRUD');
+const userCRUDLogic = require('../logic/userCRUD');
 const logger = require('../utils/logger')('Controllers:ProfileController');
 
 // [GET] api/profile/me
@@ -148,9 +149,34 @@ const userProfileRetrieverByUserId = async (req, res) => {
   }
 };
 
+// [DELETE] api/profile
+const deleteProfileWithUser = async (req, res) => {
+  try {
+    // delete profile
+    await profileCRUDLogic.deleteProfile(req.user.id);
+    // delete user
+    await userCRUDLogic.deleteUser(req.user.id);
+
+    return res.status(200).json({
+      err: null,
+      msg: `The requested user is deleted with it's profile`,
+      data: null,
+    });
+  } catch (err) {
+    logger.error('@deleteProfileWithUser() [error: %0]', err.message);
+
+    return res.status(500).json({
+      err: null,
+      msg: `Cannot delete this User or it's Profiles`,
+      data: null,
+    });
+  }
+};
+
 module.exports = {
   currentUserProfileRetrieverById,
   userProfileCreatorOrUpdater,
   allUserProfilesRetriever,
   userProfileRetrieverByUserId,
+  deleteProfileWithUser,
 };
