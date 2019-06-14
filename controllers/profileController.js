@@ -173,10 +173,44 @@ const deleteProfileWithUser = async (req, res) => {
   }
 };
 
+const addExperienceToProfile = async (req, res) => {
+  const { title, company, location, from, to, current, description } = req.body;
+
+  const newExpOBJ = {
+    title,
+    company,
+    location,
+    from,
+    to,
+    current,
+    description,
+  };
+  try {
+    const retrievedProfile = await profileCRUDLogic.addExperience(
+      req.user.id,
+      newExpOBJ,
+    );
+
+    return res.status(200).json({
+      err: null,
+      msg: `New Experience added to requested user profile`,
+      data: retrievedProfile,
+    });
+  } catch (err) {
+    logger.error('@addExperienceToProfile() [error: %0]', err.message);
+
+    return res.status(500).json({
+      err: null,
+      msg: `Cannot Add Experience To This Profile`,
+      data: null,
+    });
+  }
+};
 module.exports = {
   currentUserProfileRetrieverById,
   userProfileCreatorOrUpdater,
   allUserProfilesRetriever,
   userProfileRetrieverByUserId,
   deleteProfileWithUser,
+  addExperienceToProfile,
 };
