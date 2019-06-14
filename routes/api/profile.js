@@ -2,6 +2,7 @@ const express = require('express');
 
 const { isAuthorized } = require('../../middlewares/authorization');
 const createOrUpdateProfileValidation = require('../../validations/createOrUpdateProfile.validation');
+const addExperienceProfileValidation = require('../../validations/addExperienceProfile.validation');
 const profileController = require('../../controllers/profileController');
 
 const router = express.Router();
@@ -39,5 +40,15 @@ router.get('/user/:user_Id', profileController.userProfileRetrieverByUserId);
 // @desc  delete profile , user & posts
 // @access Private
 router.delete('/', isAuthorized, profileController.deleteProfileWithUser);
+
+// [PUT] api/profile/experience
+// @desc  Add Profie Experience
+// @access Private
+router.put(
+  '/experience',
+  isAuthorized,
+  addExperienceProfileValidation,
+  profileController.addExperienceToProfile,
+);
 
 module.exports = router;
