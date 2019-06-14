@@ -2,7 +2,7 @@ const profileModel = require('../models/profileModel');
 const logger = require('../utils/logger')('Logic:profileCRUD');
 
 /**
- * Function the retrieve user profile by id
+ * Function the retrieve user , name and avatar user profile by id
  * @param {String} id
  * @returns {Promise | Error}
  */
@@ -14,7 +14,7 @@ const getUserProfileById = async id => {
 
     return Promise.resolve(profile);
   } catch (err) {
-    logger.error('@getUserProfile() [error: %0]', err.message);
+    logger.error('@getUserProfileById() [error: %0]', err.message);
 
     return Promise.reject(
       new Error('Cannot complete finding the requested profile in mongoDB'),
@@ -93,9 +93,35 @@ const deleteProfile = async id => {
     return Promise.reject(new Error('Cannot delete this profile in mongoDB'));
   }
 };
+
+/**
+ * Function to add experience to the requested profile id
+ * @param {String} id
+ * @param {Object} experienceFields
+ * @returns {Promise | Error}
+ */
+const addExperience = async (id, experienceFields) => {
+  try {
+    const profile = await profileModel.findOne({ user: id });
+
+    profile.experience.unshift(experienceFields);
+
+    profile.save();
+
+    return Promise.resolve(profile);
+  } catch (err) {
+    logger.error('@getUserProfileByIdAllData() [error: %0]', err.message);
+
+    return Promise.reject(
+      new Error('Cannot complete finding the requested profile in mongoDB'),
+    );
+  }
+};
+
 module.exports = {
   getUserProfileById,
   createOrUpdateProfile,
   getAllUserProfile,
   deleteProfile,
+  addExperience,
 };
