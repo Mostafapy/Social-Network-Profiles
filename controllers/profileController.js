@@ -206,6 +206,30 @@ const addExperienceToProfile = async (req, res) => {
     });
   }
 };
+
+const deleteExperienceFromProfile = async (req, res) => {
+  try {
+    await profileCRUDLogic.deleteExperience(
+      req.user.id,
+      req.params.experienceId,
+    );
+
+    return res.status(200).json({
+      err: null,
+      msg: `Successfully delete experence for the requested profile`,
+      data: null,
+    });
+  } catch (err) {
+    logger.error('@deleteExperienceFromProfile() [error: %0]', err.message);
+
+    return res.status(500).json({
+      err: null,
+      msg: `Cannot Delete Experience From This Profile`,
+      data: null,
+    });
+  }
+};
+
 module.exports = {
   currentUserProfileRetrieverById,
   userProfileCreatorOrUpdater,
@@ -213,4 +237,5 @@ module.exports = {
   userProfileRetrieverByUserId,
   deleteProfileWithUser,
   addExperienceToProfile,
+  deleteExperienceFromProfile,
 };
