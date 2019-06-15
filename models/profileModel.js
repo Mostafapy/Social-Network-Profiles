@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const educationSchema = new mongoose.Schema({
-  _id: false,
   school: {
     type: String,
     required: true,
@@ -60,7 +59,6 @@ const profileSchema = new mongoose.Schema(
     },
     experience: [
       {
-        _id: false,
         title: {
           type: String,
           required: true,
