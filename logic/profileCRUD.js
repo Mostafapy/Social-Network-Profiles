@@ -118,10 +118,35 @@ const addExperience = async (id, experienceFields) => {
   }
 };
 
+/**
+ * Function to delete the experience attribute in a user profile
+ * @param {String} userId
+ * @param {String} expId
+ * @returns {Promise | Error}
+ */
+const deleteExperience = async (userId, expId) => {
+  try {
+    await profileModel.findOneAndUpdate(
+      { user: userId },
+      { $pull: { experience: { _id: expId } } },
+      { useFindAndModify: false },
+    );
+
+    return Promise.resolve();
+  } catch (err) {
+    logger.error('@deleteExperience() [error: %0]', err.message);
+
+    return Promise.reject(
+      new Error('Cannot delete experience for this profile'),
+    );
+  }
+};
+
 module.exports = {
   getUserProfileById,
   createOrUpdateProfile,
   getAllUserProfile,
   deleteProfile,
   addExperience,
+  deleteExperience,
 };
