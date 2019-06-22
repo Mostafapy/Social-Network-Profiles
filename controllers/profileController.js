@@ -173,6 +173,7 @@ const deleteProfileWithUser = async (req, res) => {
   }
 };
 
+// [PUT] api/profile/experience
 const addExperienceToProfile = async (req, res) => {
   const { title, company, location, from, to, current, description } = req.body;
 
@@ -207,6 +208,7 @@ const addExperienceToProfile = async (req, res) => {
   }
 };
 
+// [DELETE] api/profile/experience/:experienceId
 const deleteExperienceFromProfile = async (req, res) => {
   try {
     await profileCRUDLogic.deleteExperience(
@@ -216,11 +218,78 @@ const deleteExperienceFromProfile = async (req, res) => {
 
     return res.status(200).json({
       err: null,
-      msg: `Successfully delete experence for the requested profile`,
+      msg: `Successfully delete experience for the requested profile`,
       data: null,
     });
   } catch (err) {
     logger.error('@deleteExperienceFromProfile() [error: %0]', err.message);
+
+    return res.status(500).json({
+      err: null,
+      msg: `Cannot Delete Experience From This Profile`,
+      data: null,
+    });
+  }
+};
+
+// [PUT] api/profile/education
+const addEducationToProfile = async (req, res) => {
+  const {
+    school,
+    degree,
+    fieldofstudy,
+    from,
+    to,
+    current,
+    description,
+  } = req.body;
+
+  const newEduOBJ = {
+    school,
+    degree,
+    fieldofstudy,
+    from,
+    to,
+    current,
+    description,
+  };
+  try {
+    const retrievedProfile = await profileCRUDLogic.addEducation(
+      req.user.id,
+      newEduOBJ,
+    );
+
+    return res.status(200).json({
+      err: null,
+      msg: `New Education informations added to requested user profile`,
+      data: retrievedProfile,
+    });
+  } catch (err) {
+    logger.error('@addEducationToProfile() [error: %0]', err.message);
+
+    return res.status(500).json({
+      err: null,
+      msg: `Cannot Add Education To This Profile`,
+      data: null,
+    });
+  }
+};
+
+// [DELETE] api/profile/education/:educationId
+const deleteEducationFromProfile = async (req, res) => {
+  try {
+    await profileCRUDLogic.deleteExperience(
+      req.user.id,
+      req.params.educationId,
+    );
+
+    return res.status(200).json({
+      err: null,
+      msg: `Successfully delete education for the requested profile`,
+      data: null,
+    });
+  } catch (err) {
+    logger.error('@deleteEducationFromProfile() [error: %0]', err.message);
 
     return res.status(500).json({
       err: null,
@@ -238,4 +307,6 @@ module.exports = {
   deleteProfileWithUser,
   addExperienceToProfile,
   deleteExperienceFromProfile,
+  addEducationToProfile,
+  deleteEducationFromProfile,
 };
