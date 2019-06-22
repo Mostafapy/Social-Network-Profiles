@@ -3,6 +3,7 @@ const express = require('express');
 const { isAuthorized } = require('../../middlewares/authorization');
 const createOrUpdateProfileValidation = require('../../validations/createOrUpdateProfile.validation');
 const addExperienceProfileValidation = require('../../validations/addExperienceProfile.validation');
+const addEducationProfileValidation = require('../../validations/addEducationProfileValidation');
 const profileController = require('../../controllers/profileController');
 
 const router = express.Router();
@@ -58,5 +59,24 @@ router.delete(
   '/experience/:experienceId',
   isAuthorized,
   profileController.deleteExperienceFromProfile,
+);
+
+// [PUT] api/profile/education
+// @desc  Add Profie Education
+// @access Private
+router.put(
+  '/education',
+  isAuthorized,
+  addEducationProfileValidation,
+  profileController.addEducationToProfile,
+);
+
+// [DELETE] api/profile/education/:educationId
+// @desc  Delete Profie Education
+// @access Private
+router.delete(
+  '/education/:educationId',
+  isAuthorized,
+  profileController.deleteEducationFromProfile,
 );
 module.exports = router;
