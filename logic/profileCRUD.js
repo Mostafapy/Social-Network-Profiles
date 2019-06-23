@@ -110,10 +110,12 @@ const addExperience = async (id, experienceFields) => {
 
     return Promise.resolve(profile);
   } catch (err) {
-    logger.error('@getUserProfileByIdAllData() [error: %0]', err.message);
+    logger.error('@addExperience() [error: %0]', err.message);
 
     return Promise.reject(
-      new Error('Cannot complete finding the requested profile in mongoDB'),
+      new Error(
+        'Cannot complete adding new Experience the requested profile in mongoDB',
+      ),
     );
   }
 };
@@ -142,6 +144,55 @@ const deleteExperience = async (userId, expId) => {
   }
 };
 
+/**
+ * Function to add education to the requested profile id
+ * @param {String} id
+ * @param {Object} educationFields
+ * @returns {Promise | Error}
+ */
+const addEducation = async (id, educationFields) => {
+  try {
+    const profile = await profileModel.findOne({ user: id });
+
+    profile.experience.unshift(educationFields);
+
+    profile.save();
+
+    return Promise.resolve(profile);
+  } catch (err) {
+    logger.error('@addEducation() [error: %0]', err.message);
+
+    return Promise.reject(
+      new Error(
+        'Cannot complete adding new education the requested profile in mongoDB',
+      ),
+    );
+  }
+};
+
+/**
+ * Function to delete the education attribute in a user profile
+ * @param {String} userId
+ * @param {String} eduId
+ * @returns {Promise | Error}
+ */
+const deleteEducation = async (userId, eduId) => {
+  try {
+    await profileModel.findOneAndUpdate(
+      { user: userId },
+      { $pull: { education: { _id: eduId } } },
+      { useFindAndModify: false },
+    );
+
+    return Promise.resolve();
+  } catch (err) {
+    logger.error('@deleteEducation() [error: %0]', err.message);
+
+    return Promise.reject(
+      new Error('Cannot delete education for this profile'),
+    );
+  }
+};
 module.exports = {
   getUserProfileById,
   createOrUpdateProfile,
@@ -149,4 +200,6 @@ module.exports = {
   deleteProfile,
   addExperience,
   deleteExperience,
+  addEducation,
+  deleteEducation,
 };
