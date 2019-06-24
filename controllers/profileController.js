@@ -1,6 +1,23 @@
+const request = require('request');
+const config = require('config');
 const profileCRUDLogic = require('../logic/profileCRUD');
 const userCRUDLogic = require('../logic/userCRUD');
 const logger = require('../utils/logger')('Controllers:ProfileController');
+
+// private function
+const _request = options =>
+  new Promise((resolve, reject) => {
+    request(options, (err, response, body) => {
+      if (!err && response.statusCode === 200) {
+        resolve(body);
+      } else {
+        if (response.statusCode === 404) {
+          resolve(null);
+        }
+        reject(new Error(err));
+      }
+    });
+  });
 
 // [GET] api/profile/me
 const currentUserProfileRetrieverById = async (req, res) => {
@@ -299,6 +316,42 @@ const deleteEducationFromProfile = async (req, res) => {
   }
 };
 
+// [GET] api/profile/github/:username
+const getGithubReposForProfiles = async (req, res) => {
+  try {
+    const options = {
+      uri: `https://api.github.com/users/${
+        req.params.username
+      }/repos?per_page=5&sort=created:asc&client_id=${
+        config.get('github').clientId
+      }&client_secret=${config.get('github').secret}`,
+      method: 'GET',
+      headers: { 'user-agent': 'node.js' },
+    };
+    const response = await _request(options);
+    if (response) {
+      return res.status(200).json({
+        err: null,
+        msg: `Github Profile Found`,
+        data: JSON.parse(response),
+      });
+    }
+
+    return res.status(404).json({
+      err: null,
+      msg: `No Github Profile Found`,
+      data: JSON.parse(response),
+    });
+  } catch (err) {
+    logger.error('@getGithubReposForProfiles() [error: %0]', err.message);
+
+    return res.status(500).json({
+      err: null,
+      msg: `Cannot Get the github repository for this user`,
+      data: null,
+    });
+  }
+};
 module.exports = {
   currentUserProfileRetrieverById,
   userProfileCreatorOrUpdater,
@@ -309,4 +362,5 @@ module.exports = {
   deleteExperienceFromProfile,
   addEducationToProfile,
   deleteEducationFromProfile,
+  getGithubReposForProfiles,
 };
