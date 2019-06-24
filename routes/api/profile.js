@@ -79,4 +79,9 @@ router.delete(
   isAuthorized,
   profileController.deleteEducationFromProfile,
 );
+
+// [GET] api/profile/github/:username
+// @desc  view github user profile
+// @access public
+router.get('/github/:username', profileController.getGithubReposForProfiles);
 module.exports = router;
