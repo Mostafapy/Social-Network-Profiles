@@ -10,4 +10,8 @@ module.exports = {
   jwt: {
     secret: '<VALUE>',
   },
+  github: {
+    clientId: '<VALUE>',
+    secret: '<VALUE>',
+  },
 };
