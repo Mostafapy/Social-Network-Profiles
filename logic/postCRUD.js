@@ -26,4 +26,56 @@ const createPost = async (id, postText) => {
   }
 };
 
-module.exports = { createPost };
+/**
+ * Function to get all the posts
+ * @returns {Promise | Error}
+ */
+const getPosts = async () => {
+  try {
+    const posts = await Post.find().sort({ date: -1 });
+
+    return Promise.resolve(posts);
+  } catch (err) {
+    logger.error('@getPosts() [error: %0]', err.message);
+
+    return Promise.reject(new Error('Cannot get posts'));
+  }
+};
+
+/**
+ * Function to get a post by id
+ * @returns {Promise | Error}
+ */
+const getPostById = async id => {
+  try {
+    const post = await Post.findById(id);
+
+    return Promise.resolve(post);
+  } catch (err) {
+    logger.error('@getPosts() [error: %0]', err.message);
+
+    return Promise.reject(new Error('Cannot get posts'));
+  }
+};
+
+/**
+ * Function to delete a post by id
+ * @returns {Promise | Error}
+ */
+const deletePost = async id => {
+  try {
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return Promise.resolve('failed');
+    }
+    await post.remove();
+
+    return Promise.resolve('successed');
+  } catch (err) {
+    logger.error('@getPosts() [error: %0]', err.message);
+
+    return Promise.reject(new Error('Cannot get posts'));
+  }
+};
+module.exports = { createPost, getPosts, getPostById, deletePost };
