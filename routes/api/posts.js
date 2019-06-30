@@ -15,4 +15,19 @@ router.post(
   postController.addPost,
 );
 
+// [GET] api/post
+// @desc  Get all post
+// @access Private
+router.get('/', isAuthorized, postController.retrieveAllPosts);
+
+// [GET] api/post/:postId
+// @desc  Get a post by it's id
+// @access Private
+router.get('/:postId', isAuthorized, postController.retrievePostById);
+
+// [DELETE] api/post/:postId
+// @desc  DELETE a post by it's id
+// @access Private
+router.delete('/:postId', isAuthorized, postController.DeletePostById);
+
 module.exports = router;
