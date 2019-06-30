@@ -117,9 +117,90 @@ const DeletePostById = async (req, res) => {
   }
 };
 
+// [PUT] api/post/like/:postId
+const addLikesForPost = async (req, res) => {
+  try {
+    const retrievedPost = await postCRUDLogic.getPostById(req.params.postId);
+
+    if (!retrievedPost) {
+      return res.status(404).json({
+        err: null,
+        msg: 'There is no post for the requested post id',
+        data: null,
+      });
+    }
+
+    const postLikes = await postCRUDLogic.addLike(retrievedPost, req.user.id);
+    if (postLikes === `liked before`) {
+      return res.status(400).json({
+        err: null,
+        msg: `this post has already liked`,
+        data: null,
+      });
+    }
+
+    return res.status(200).json({
+      err: null,
+      msg: `Successfully add like to this post`,
+      data: postLikes,
+    });
+  } catch (err) {
+    logger.error('@addLikesForPost() [error: %0]', err.message);
+
+    return res.status(500).json({
+      err: null,
+      msg: `Cannot add likes for this post`,
+      data: null,
+    });
+  }
+};
+
+// [PUT] api/post/unlike/:postId
+const unlikePost = async (req, res) => {
+  try {
+    const retrievedPost = await postCRUDLogic.getPostById(req.params.postId);
+
+    if (!retrievedPost) {
+      return res.status(404).json({
+        err: null,
+        msg: 'There is no post for the requested post id',
+        data: null,
+      });
+    }
+
+    const postLikes = await postCRUDLogic.unLikePosts(
+      retrievedPost,
+      req.user.id,
+    );
+
+    if (postLikes === `not liked before`) {
+      return res.status(400).json({
+        err: null,
+        msg: `this post hasn't yet liked`,
+        data: null,
+      });
+    }
+
+    return res.status(200).json({
+      err: null,
+      msg: `Successfully unlike this post`,
+      data: postLikes,
+    });
+  } catch (err) {
+    logger.error('@unlikePost() [error: %0]', err.message);
+
+    return res.status(500).json({
+      err: null,
+      msg: `Cannot unlike this post`,
+      data: null,
+    });
+  }
+};
 module.exports = {
   addPost,
   retrieveAllPosts,
   retrievePostById,
   DeletePostById,
+  addLikesForPost,
+  unlikePost,
 };
