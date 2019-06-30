@@ -54,7 +54,7 @@ const getPostById = async id => {
   } catch (err) {
     logger.error('@getPosts() [error: %0]', err.message);
 
-    return Promise.reject(new Error('Cannot get posts'));
+    return Promise.reject(new Error('Cannot get post by id'));
   }
 };
 
@@ -75,7 +75,70 @@ const deletePost = async id => {
   } catch (err) {
     logger.error('@getPosts() [error: %0]', err.message);
 
-    return Promise.reject(new Error('Cannot get posts'));
+    return Promise.reject(new Error('Cannot delete a post'));
   }
 };
-module.exports = { createPost, getPosts, getPostById, deletePost };
+
+/**
+ * Function to add like for a post
+ * @param {Object} post
+ * @param {String} userId
+ * @returns {Promise | Error}
+ */
+const addLike = async (post, userId) => {
+  try {
+    // check if post has already been liked
+    if (post.likes.filter(like => like.user.toString() === userId).length > 0) {
+      return Promise.resolve('liked before');
+    }
+    post.likes.unshift({ user: userId });
+
+    await post.save();
+
+    return Promise.resolve(post.likes);
+  } catch (err) {
+    logger.error('@addLike() [error: %0]', err.message);
+
+    return Promise.reject(new Error('Cannot add a like for this post'));
+  }
+};
+
+/**
+ * Function to unlike a post
+ * @param {Object} post
+ * @param {String} userId
+ * @returns {Promise | Error}
+ */
+const unLikePosts = async (post, userId) => {
+  try {
+    // check if post hasn't yet been liked
+    if (
+      post.likes.filter(like => like.user.toString() === userId).length === 0
+    ) {
+      return Promise.resolve('not liked before');
+    }
+    // get remove index
+    const removeIndex = post.likes
+      .map(like => like.user.toString())
+      .indexOf(userId);
+
+    post.likes.splice(removeIndex, 1);
+
+    await post.save();
+
+    return Promise.resolve(post.likes);
+  } catch (err) {
+    logger.error('@addLike() [error: %0]', err.message);
+
+    return Promise.reject(new Error('Cannot add a like for this post'));
+  }
+};
+
+module.exports = {
+  createPost,
+  getPosts,
+  getPostById,
+  deletePost,
+  addLike,
+  unLikePosts,
+};
