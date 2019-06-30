@@ -30,4 +30,13 @@ router.get('/:postId', isAuthorized, postController.retrievePostById);
 // @access Private
 router.delete('/:postId', isAuthorized, postController.DeletePostById);
 
+// [PUT] api/post/like/:postId
+// @desc  Like a post
+// @access Private
+router.put('/like/:postId', isAuthorized, postController.addLikesForPost);
+
+// [PUT] api/post/unlike/:postId
+// @desc  unLike a post
+// @access Private
+router.put('/unlike/:postId', isAuthorized, postController.unlikePost);
 module.exports = router;
