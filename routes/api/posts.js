@@ -1,6 +1,7 @@
 const express = require('express');
 const { isAuthorized } = require('../../middlewares/authorization');
 const addPostRequestValidation = require('../../validations/addPostValidation');
+const addCommentRequestValidation = require('../../validations/addCommentForPostValidation');
 const postController = require('../../controllers/postController');
 
 const router = express.Router();
@@ -39,4 +40,24 @@ router.put('/like/:postId', isAuthorized, postController.addLikesForPost);
 // @desc  unLike a post
 // @access Private
 router.put('/unlike/:postId', isAuthorized, postController.unlikePost);
+
+// [PUT] api/post/comment/:postId
+// @desc  comment on a post
+// @access Private
+router.put(
+  '/comment/:postId',
+  isAuthorized,
+  addCommentRequestValidation,
+  postController.addCommentForPost,
+);
+
+// [PUT] api/post/uncomment/:postId/:commentId
+// @desc  comment on a post
+// @access Private
+router.put(
+  '/uncomment/:postId/:comment:Id',
+  isAuthorized,
+  postController.removeCommentForPost,
+);
+
 module.exports = router;
