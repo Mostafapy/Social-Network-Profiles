@@ -134,6 +134,73 @@ const unLikePosts = async (post, userId) => {
   }
 };
 
+/**
+ * function to add comment for post
+ * @param {String} userId
+ * @param {String} postId
+ * @param {String} commentText
+ * @returns {Promise | Error}
+ */
+const addComment = async (userId, postId, commentText) => {
+  try {
+    const user = await userCRUDLogic.getUserById(userId);
+
+    const post = await getPostById(postId);
+
+    const newComment = {
+      text: commentText,
+      name: user.name,
+      avatar: user.avatar,
+      user: userId,
+    };
+
+    post.comments.unshift(newComment);
+
+    const postAfterAddingComment = await post.save();
+
+    return Promise.resolve(postAfterAddingComment);
+  } catch (err) {
+    logger.error('@addComment() [error: %0]', err.message);
+
+    return Promise.reject(new Error('Cannot Add a comment for this post'));
+  }
+};
+
+/**
+ * function to uncomment a post
+ * @param {String} userId
+ * @param {String} postId
+ * @param {String} commentId
+ * @returns {Promise | Error}
+ */
+const uncommentPost = async (userId, postId, commentId) => {
+  try {
+    const post = await getPostById(postId);
+
+    // pull out comments
+    const comment = post.comments.find(comment => comment.id === commentId);
+
+    if (!comment) {
+      return Promise.resolve('not found');
+    }
+
+    // get remove index
+    const removeIndex = post.likes
+      .map(comment => comment.user.toString())
+      .indexOf(userId);
+
+    post.comments.splice(removeIndex, 1);
+
+    await post.save();
+
+    return Promise.resolve(post.comments);
+  } catch (err) {
+    logger.error('@addComment() [error: %0]', err.message);
+
+    return Promise.reject(new Error('Cannot Add a comment for this post'));
+  }
+};
+
 module.exports = {
   createPost,
   getPosts,
@@ -141,4 +208,6 @@ module.exports = {
   deletePost,
   addLike,
   unLikePosts,
+  addComment,
+  uncommentPost,
 };
