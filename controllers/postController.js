@@ -196,6 +196,56 @@ const unlikePost = async (req, res) => {
     });
   }
 };
+
+// [PUT] api/post/comment/:postId
+const addCommentForPost = async (req, res) => {
+  try {
+    const post = await postCRUDLogic.addComment(
+      req.user.id,
+      req.params.postId,
+      req.body.text,
+    );
+
+    return res.status(200).json({
+      err: null,
+      msg: `Successfully new comment added`,
+      data: post,
+    });
+  } catch (err) {
+    logger.error('@addCommentForPost() [error: %0]', err.message);
+
+    return res.status(500).json({
+      err: null,
+      msg: `Cannot add new comment for this post`,
+      data: null,
+    });
+  }
+};
+
+// [PUT] api/post/uncomment/:postId/:commentId
+const removeCommentForPost = async (req, res) => {
+  try {
+    const comments = await postCRUDLogic.uncommentPost(
+      req.user.id,
+      req.params.postId,
+      req.params.commentId,
+    );
+
+    return res.status(200).json({
+      err: null,
+      msg: `Successfully uncomment this post`,
+      data: comments,
+    });
+  } catch (err) {
+    logger.error('@removeCommentForPost() [error: %0]', err.message);
+
+    return res.status(500).json({
+      err: null,
+      msg: `Cannot add uncomment this post`,
+      data: null,
+    });
+  }
+};
 module.exports = {
   addPost,
   retrieveAllPosts,
@@ -203,4 +253,6 @@ module.exports = {
   DeletePostById,
   addLikesForPost,
   unlikePost,
+  addCommentForPost,
+  removeCommentForPost,
 };
