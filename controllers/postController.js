@@ -133,7 +133,7 @@ const unlikePost = async (req, res) => {
   }
 };
 
-// [PUT] api/post/comment/:postId
+// [POST] api/post/comment/:postId
 const addCommentForPost = async (req, res) => {
   try {
     const post = await postCRUDLogic.addComment(
@@ -150,7 +150,7 @@ const addCommentForPost = async (req, res) => {
   }
 };
 
-// [PUT] api/post/uncomment/:postId/:commentId
+// [DELETE] api/post/uncomment/:postId/:commentId
 const removeCommentForPost = async (req, res) => {
   try {
     const comments = await postCRUDLogic.uncommentPost(
