@@ -41,20 +41,20 @@ router.put('/like/:postId', isAuthorized, postController.addLikesForPost);
 // @access Private
 router.put('/unlike/:postId', isAuthorized, postController.unlikePost);
 
-// [PUT] api/post/comment/:postId
+// [POST] api/post/comment/:postId
 // @desc  comment on a post
 // @access Private
-router.put(
+router.post(
   '/comment/:postId',
   isAuthorized,
   addCommentRequestValidation,
   postController.addCommentForPost,
 );
 
-// [PUT] api/post/uncomment/:postId/:commentId
+// [DELETE] api/post/uncomment/:postId/:commentId
 // @desc  comment on a post
 // @access Private
-router.put(
+router.delete(
   '/uncomment/:postId/:comment:Id',
   isAuthorized,
   postController.removeCommentForPost,
