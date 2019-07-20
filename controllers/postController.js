@@ -4,21 +4,13 @@ const logger = require('../utils/logger')('Controllers:PostController');
 // [POST] api/post
 const addPost = async (req, res) => {
   try {
-    await postCRUDLogic.createPost(req.user.id, req.body.text);
+    const post = await postCRUDLogic.createPost(req.user.id, req.body.text);
 
-    return res.status(200).json({
-      err: null,
-      msg: `Successfully new post added`,
-      data: null,
-    });
+    return res.json(post);
   } catch (err) {
     logger.error('@addPost() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: `Cannot add new post`,
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -27,19 +19,11 @@ const retrieveAllPosts = async (_req, res) => {
   try {
     const retrievedPosts = await postCRUDLogic.getPosts();
 
-    return res.status(200).json({
-      err: null,
-      msg: `Successfully all posts retrieved`,
-      data: retrievedPosts,
-    });
+    return res.status(200).json(retrievedPosts);
   } catch (err) {
     logger.error('@getAllPosts() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: `Cannot Get any post`,
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -50,33 +34,19 @@ const retrievePostById = async (req, res) => {
 
     if (!retrievedPost) {
       return res.status(404).json({
-        err: null,
-        msg: 'There is no post for the requested post id',
-        data: null,
+        msg: 'Post is not found',
       });
     }
 
-    return res.status(200).json({
-      err: null,
-      msg: `Successfully a post retrieved by id`,
-      data: retrievedPost,
-    });
+    return res.status(200).json(retrievedPost);
   } catch (err) {
     logger.error('@retrievePostById() [error: %0]', err.message);
 
     if (err.kind === 'ObjectId') {
-      return res.status(401).json({
-        err: null,
-        msg: 'There is no post for the requested post id',
-        data: null,
-      });
+      return res.status(404).json('Post is not found');
     }
 
-    return res.status(500).json({
-      err: null,
-      msg: `Cannot Get the post by it's id`,
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -86,34 +56,24 @@ const DeletePostById = async (req, res) => {
     const operationStatus = await postCRUDLogic.deletePost(req.params.postId);
 
     if (operationStatus === 'successed')
-      return res.status(200).json({
-        err: null,
+      return res.json({
         msg: `Successfully delete post by id`,
-        data: null,
       });
 
     // operationStatus === 'failed'
     return res.status(404).json({
-      err: null,
-      msg: 'There is no post for the requested post id',
-      data: null,
+      msg: 'Post is not found',
     });
   } catch (err) {
     logger.error('@DeletePostById() [error: %0]', err.message);
 
     if (err.kind === 'ObjectId') {
-      return res.status(401).json({
-        err: null,
-        msg: 'There is no post for the requested post id',
-        data: null,
+      return res.status(404).json({
+        msg: 'Post is not found',
       });
     }
 
-    return res.status(500).json({
-      err: null,
-      msg: `Cannot delete the requested post`,
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -124,34 +84,22 @@ const addLikesForPost = async (req, res) => {
 
     if (!retrievedPost) {
       return res.status(404).json({
-        err: null,
         msg: 'There is no post for the requested post id',
-        data: null,
       });
     }
 
     const postLikes = await postCRUDLogic.addLike(retrievedPost, req.user.id);
     if (postLikes === `liked before`) {
       return res.status(400).json({
-        err: null,
-        msg: `this post has already liked`,
-        data: null,
+        msg: `Post has already liked`,
       });
     }
 
-    return res.status(200).json({
-      err: null,
-      msg: `Successfully add like to this post`,
-      data: postLikes,
-    });
+    return res.json(postLikes);
   } catch (err) {
     logger.error('@addLikesForPost() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: `Cannot add likes for this post`,
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -162,9 +110,7 @@ const unlikePost = async (req, res) => {
 
     if (!retrievedPost) {
       return res.status(404).json({
-        err: null,
         msg: 'There is no post for the requested post id',
-        data: null,
       });
     }
 
@@ -175,25 +121,15 @@ const unlikePost = async (req, res) => {
 
     if (postLikes === `not liked before`) {
       return res.status(400).json({
-        err: null,
         msg: `this post hasn't yet liked`,
-        data: null,
       });
     }
 
-    return res.status(200).json({
-      err: null,
-      msg: `Successfully unlike this post`,
-      data: postLikes,
-    });
+    return res.json(postLikes);
   } catch (err) {
     logger.error('@unlikePost() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: `Cannot unlike this post`,
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -206,19 +142,11 @@ const addCommentForPost = async (req, res) => {
       req.body.text,
     );
 
-    return res.status(200).json({
-      err: null,
-      msg: `Successfully new comment added`,
-      data: post,
-    });
+    return res.status(200).json(post.comments);
   } catch (err) {
     logger.error('@addCommentForPost() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: `Cannot add new comment for this post`,
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -230,20 +158,14 @@ const removeCommentForPost = async (req, res) => {
       req.params.postId,
       req.params.commentId,
     );
-
-    return res.status(200).json({
-      err: null,
-      msg: `Successfully uncomment this post`,
-      data: comments,
-    });
+    if (comments === 'not found') {
+      return res.status(404).json({ msg: 'Comment does not exit' });
+    }
+    return res.json(comments);
   } catch (err) {
     logger.error('@removeCommentForPost() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: `Cannot add uncomment this post`,
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 module.exports = {

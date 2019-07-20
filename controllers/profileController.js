@@ -28,24 +28,15 @@ const currentUserProfileRetrieverById = async (req, res) => {
 
     if (!retrievedProfile) {
       return res.status(401).json({
-        err: null,
         msg: 'There is no profile for this user',
-        data: null,
       });
     }
-    return res.status(200).json({
-      err: null,
-      msg: 'The requested profile is retrieved successfully',
-      data: retrievedProfile,
-    });
+
+    return res.json(retrievedProfile);
   } catch (err) {
     logger.error('@userProfileRetriever() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: 'Error In Retrieving User Profile',
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -84,27 +75,15 @@ const userProfileCreatorOrUpdater = async (req, res) => {
     profileOBJ.skills = skills.split(',').map(skill => skill.trim());
     profileOBJ.status = status;
 
-    const actionDone = await profileCRUDLogic.createOrUpdateProfile(
-      profileOBJ.user,
-      profileOBJ,
-    ); // created //updated
+    await profileCRUDLogic.createOrUpdateProfile(profileOBJ.user, profileOBJ); // created //updated
 
-    if (actionDone === 'created')
-      return res
-        .status(200)
-        .json({ err: null, msg: `One User Profile Created`, data: null });
+    const profile = await profileCRUDLogic.getUserProfile(profileOBJ.user);
 
-    return res
-      .status(200)
-      .json({ err: null, msg: `One User Profile Updated`, data: null });
+    return res.json(profile);
   } catch (err) {
     logger.error('@userProfileCreatorOrUpdater() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: 'Cannot Create Or Update User Profile',
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -113,19 +92,11 @@ const allUserProfilesRetriever = async (req, res) => {
   try {
     const allProfiles = await profileCRUDLogic.getAllUserProfile();
 
-    return res.status(200).json({
-      err: null,
-      msg: 'All User Profiles are retrieved successfully',
-      data: allProfiles,
-    });
+    return res.json(allProfiles);
   } catch (err) {
     logger.error('@allUserProfilesRetriever() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: 'Cannot get User Profiles',
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -137,32 +108,21 @@ const userProfileRetrieverByUserId = async (req, res) => {
     );
 
     if (!retrievedProfile) {
-      return res.status(401).json({
-        err: null,
-        msg: 'There is no profile for the requested user id',
-        data: null,
+      return res.status(400).json({
+        msg: 'Profile is not found',
       });
     }
-    return res.status(200).json({
-      err: null,
-      msg: 'The requested profile is retrieved successfully',
-      data: retrievedProfile,
-    });
+
+    return res.json(retrievedProfile);
   } catch (err) {
     logger.error('@userProfileRetriever() [error: %0]', err.message);
 
     if (err.kind === 'ObjectId') {
-      return res.status(401).json({
-        err: null,
-        msg: 'There is no profile for the requested user id',
-        data: null,
+      return res.status(400).json({
+        msg: 'Profile is not found',
       });
     }
-    return res.status(500).json({
-      err: null,
-      msg: 'Error In Retrieving User Profile',
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -174,19 +134,13 @@ const deleteProfileWithUser = async (req, res) => {
     // delete user
     await userCRUDLogic.deleteUser(req.user.id);
 
-    return res.status(200).json({
-      err: null,
+    return res.json({
       msg: `The requested user is deleted with it's profile`,
-      data: null,
     });
   } catch (err) {
     logger.error('@deleteProfileWithUser() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: `Cannot delete this User or it's Profiles`,
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -209,19 +163,11 @@ const addExperienceToProfile = async (req, res) => {
       newExpOBJ,
     );
 
-    return res.status(200).json({
-      err: null,
-      msg: `New Experience added to requested user profile`,
-      data: retrievedProfile,
-    });
+    return res.status(200).json(retrievedProfile);
   } catch (err) {
     logger.error('@addExperienceToProfile() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: `Cannot Add Experience To This Profile`,
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -233,19 +179,13 @@ const deleteExperienceFromProfile = async (req, res) => {
       req.params.experienceId,
     );
 
-    return res.status(200).json({
-      err: null,
-      msg: `Successfully delete experience for the requested profile`,
-      data: null,
-    });
+    const profile = await profileCRUDLogic.getUserProfile(req.user.id);
+
+    return res.json(profile);
   } catch (err) {
     logger.error('@deleteExperienceFromProfile() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: `Cannot Delete Experience From This Profile`,
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -276,43 +216,26 @@ const addEducationToProfile = async (req, res) => {
       newEduOBJ,
     );
 
-    return res.status(200).json({
-      err: null,
-      msg: `New Education informations added to requested user profile`,
-      data: retrievedProfile,
-    });
+    return res.json(retrievedProfile);
   } catch (err) {
     logger.error('@addEducationToProfile() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: `Cannot Add Education To This Profile`,
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
 // [DELETE] api/profile/education/:educationId
 const deleteEducationFromProfile = async (req, res) => {
   try {
-    await profileCRUDLogic.deleteExperience(
-      req.user.id,
-      req.params.educationId,
-    );
+    await profileCRUDLogic.deleteEducation(req.user.id, req.params.educationId);
 
-    return res.status(200).json({
-      err: null,
-      msg: `Successfully delete education for the requested profile`,
-      data: null,
-    });
+    const profile = await profileCRUDLogic.getUserProfile(req.user.id);
+
+    return res.json(profile);
   } catch (err) {
     logger.error('@deleteEducationFromProfile() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: `Cannot Delete Experience From This Profile`,
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
@@ -330,26 +253,16 @@ const getGithubReposForProfiles = async (req, res) => {
     };
     const response = await _request(options);
     if (response) {
-      return res.status(200).json({
-        err: null,
-        msg: `Github Profile Found`,
-        data: JSON.parse(response),
-      });
+      return res.json(JSON.parse(response));
     }
 
     return res.status(404).json({
-      err: null,
       msg: `No Github Profile Found`,
-      data: JSON.parse(response),
     });
   } catch (err) {
     logger.error('@getGithubReposForProfiles() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: `Cannot Get the github repository for this user`,
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 module.exports = {

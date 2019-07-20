@@ -13,19 +13,11 @@ const manageAuthorization = async (req, res) => {
   try {
     const retrievedUser = await userCRUDLogic.getUserById(req.user.id);
 
-    res.status(200).json({
-      err: null,
-      msg: null,
-      data: retrievedUser,
-    });
+    res.json(retrievedUser);
   } catch (err) {
     logger.error('@manageAuth [error: %0]', err.message);
 
-    res.status(500).json({
-      err: null,
-      msg: `Cannot find the requested user by this Id`,
-      data: null,
-    });
+    res.status(500).send('Server Error');
   }
 };
 
@@ -35,10 +27,12 @@ const manageAuthentication = async (req, res) => {
   try {
     const existedUser = await userCRUDLogic.getUser(email);
     if (!existedUser) {
-      return res.status(500).json({
-        err: null,
-        msg: 'Invalid Credentials',
-        data: null,
+      return res.status(400).json({
+        error: [
+          {
+            msg: 'Invalid Credentials',
+          },
+        ],
       });
     }
     // compare password
@@ -48,10 +42,12 @@ const manageAuthentication = async (req, res) => {
     );
 
     if (!isMatch) {
-      return res.status(500).json({
-        err: null,
-        msg: 'Invalid Credentials',
-        data: null,
+      return res.status(400).json({
+        error: [
+          {
+            msg: 'Invalid Credentials',
+          },
+        ],
       });
     }
 
@@ -64,19 +60,11 @@ const manageAuthentication = async (req, res) => {
     const jwtSign = promisify(jwt.sign);
     const token = await jwtSign(payload, jwtConfig.secret, { expiresIn: 3600 });
 
-    return res.status(200).json({
-      err: null,
-      msg: 'Signed in successfully',
-      data: token,
-    });
+    return res.json({ token });
   } catch (err) {
     logger.error('@manageAuthentication() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: null,
-      msg: 'Cannot authorize The Requested User',
-      data: null,
-    });
+    res.status(500).send('Server Error');
   }
 };
 module.exports = { manageAuthorization, manageAuthentication };

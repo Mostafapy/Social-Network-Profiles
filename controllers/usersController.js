@@ -14,10 +14,12 @@ const userRegistration = async (req, res) => {
   try {
     const existedUser = await userCRUDLogic.getUser(email);
     if (existedUser) {
-      return res.status(500).json({
-        err: null,
-        msg: 'User already exists',
-        data: null,
+      return res.status(400).json({
+        errors: [
+          {
+            msg: 'User already exists',
+          },
+        ],
       });
     }
     const avatar = gravatar.url(email, { s: '200', r: 'pg', d: 'mm' });
@@ -37,19 +39,11 @@ const userRegistration = async (req, res) => {
     const jwtSign = promisify(jwt.sign);
     const token = await jwtSign(payload, jwtConfig.secret, { expiresIn: 3600 });
 
-    return res.status(200).json({
-      err: null,
-      msg: 'One User is registered successfully',
-      data: token,
-    });
+    return res.json({ token });
   } catch (err) {
     logger.error('@userRegistration() [error: %0]', err.message);
 
-    return res.status(500).json({
-      err: 'Cannot register The Requested User',
-      msg: 'Cannot register The Requested User',
-      data: null,
-    });
+    return res.status(500).send('Server Error');
   }
 };
 
