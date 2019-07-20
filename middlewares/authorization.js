@@ -8,9 +8,7 @@ const isAuthorized = (req, res, next) => {
   const token = req.headers.authorization;
   if (!token) {
     return res.status(401).json({
-      error: null,
       msg: 'No  token, Authorization is denied',
-      data: null,
     });
   }
   // verfy token
@@ -24,9 +22,7 @@ const isAuthorized = (req, res, next) => {
     logger.error('@addNewUser [error: %0]', err.message);
 
     return res.status(401).json({
-      err: null,
       msg: 'Login timed out, Token hs expired, please login again.',
-      data: null,
     });
   }
 };
