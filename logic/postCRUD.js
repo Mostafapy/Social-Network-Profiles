@@ -11,14 +11,15 @@ const createPost = async (id, postText) => {
   try {
     const user = await userCRUDLogic.getUserById(id);
 
-    Post.create({
+    const post = new Post({
       text: postText,
       name: user.name,
       avatar: user.avatar,
       user: id,
     });
 
-    return Promise.resolve();
+    await post.save();
+    return Promise.resolve(post);
   } catch (err) {
     logger.error('@createPost() [error: %0]', err.message);
 

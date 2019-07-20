@@ -2,6 +2,24 @@ const profileModel = require('../models/profileModel');
 const logger = require('../utils/logger')('Logic:profileCRUD');
 
 /**
+ * Function to retrieve user profile by id
+ * @param {String} id
+ * @returns {Promise | Error}
+ */
+const getUserProfile = async id => {
+  try {
+    const profile = await profileModel.findOne({ user: id });
+
+    return Promise.resolve(profile);
+  } catch (err) {
+    logger.error('@getUserProfile() [error: %0]', err.message);
+
+    return Promise.reject(
+      new Error('Cannot complete finding the requested profile in mongoDB'),
+    );
+  }
+};
+/**
  * Function the retrieve user , name and avatar user profile by id
  * @param {String} id
  * @returns {Promise | Error}
@@ -30,7 +48,8 @@ const getUserProfileById = async id => {
 const _updateProfile = async (id, fields) => {
   try {
     await profileModel.updateOne({ user: id }, { $set: fields });
-    return Promise.resolve('updated');
+
+    return Promise.resolve();
   } catch (err) {
     logger.error('@_updateProfile() [error: %0]', err.message);
     return Promise.reject(new Error('Cannot update user Profile'));
@@ -47,7 +66,7 @@ const createOrUpdateProfile = async (id, fields) => {
   try {
     await profileModel.create(fields);
 
-    return Promise.resolve('created');
+    return Promise.resolve();
   } catch (err) {
     if (err.name === 'MongoError' && err.code === 11000) {
       await _updateProfile(id, fields);
@@ -202,4 +221,5 @@ module.exports = {
   deleteExperience,
   addEducation,
   deleteEducation,
+  getUserProfile,
 };
