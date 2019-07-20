@@ -23,11 +23,7 @@ const addEducationToProfileRequestValidation = (req, res, next) => {
 
     const errStr = `${error.message}, (error path): ${error.path.join('.')}`;
 
-    return res.status(422).json({
-      err: errStr,
-      msg: 'Input validation error.',
-      data: null,
-    });
+    return res.status(400).json({ errors: [...errStr] });
   }
 
   return next();
