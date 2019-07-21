@@ -38,7 +38,6 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.2",
     "concurrently": "^4.1.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
