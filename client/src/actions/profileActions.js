@@ -6,7 +6,7 @@ import {
   PROFILE_LOADING,
   CLEAR_CURRENT_PROFILE,
   GET_ERRORS,
-  SET_CURRENT_USER
+  SET_CURRENT_USER,
 } from './types';
 
 // Get current profile
@@ -17,14 +17,14 @@ export const getCurrentProfile = () => dispatch => {
     .then(res =>
       dispatch({
         type: GET_PROFILE,
-        payload: res.data
-      })
+        payload: res.data,
+      }),
     )
     .catch(err =>
       dispatch({
         type: GET_PROFILE,
-        payload: {}
-      })
+        payload: {},
+      }),
     );
 };
 
@@ -36,14 +36,14 @@ export const getProfileByHandle = handle => dispatch => {
     .then(res =>
       dispatch({
         type: GET_PROFILE,
-        payload: res.data
-      })
+        payload: res.data,
+      }),
     )
     .catch(err =>
       dispatch({
         type: GET_PROFILE,
-        payload: null
-      })
+        payload: null,
+      }),
     );
 };
 
@@ -55,8 +55,8 @@ export const createProfile = (profileData, history) => dispatch => {
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
-      })
+        payload: err.response.data,
+      }),
     );
 };
 
@@ -68,8 +68,8 @@ export const addExperience = (expData, history) => dispatch => {
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
-      })
+        payload: err.response.data,
+      }),
     );
 };
 
@@ -81,8 +81,8 @@ export const addEducation = (eduData, history) => dispatch => {
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
-      })
+        payload: err.response.data,
+      }),
     );
 };
 
@@ -93,14 +93,14 @@ export const deleteExperience = id => dispatch => {
     .then(res =>
       dispatch({
         type: GET_PROFILE,
-        payload: res.data
-      })
+        payload: res.data,
+      }),
     )
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
-      })
+        payload: err.response.data,
+      }),
     );
 };
 
@@ -111,14 +111,14 @@ export const deleteEducation = id => dispatch => {
     .then(res =>
       dispatch({
         type: GET_PROFILE,
-        payload: res.data
-      })
+        payload: res.data,
+      }),
     )
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
-      })
+        payload: err.response.data,
+      }),
     );
 };
 
@@ -130,14 +130,14 @@ export const getProfiles = () => dispatch => {
     .then(res =>
       dispatch({
         type: GET_PROFILES,
-        payload: res.data
-      })
+        payload: res.data,
+      }),
     )
     .catch(err =>
       dispatch({
         type: GET_PROFILES,
-        payload: null
-      })
+        payload: null,
+      }),
     );
 };
 
@@ -149,14 +149,14 @@ export const deleteAccount = () => dispatch => {
       .then(res =>
         dispatch({
           type: SET_CURRENT_USER,
-          payload: {}
-        })
+          payload: {},
+        }),
       )
       .catch(err =>
         dispatch({
           type: GET_ERRORS,
-          payload: err.response.data
-        })
+          payload: err.response.data,
+        }),
       );
   }
 };
@@ -164,13 +164,13 @@ export const deleteAccount = () => dispatch => {
 // Profile loading
 export const setProfileLoading = () => {
   return {
-    type: PROFILE_LOADING
+    type: PROFILE_LOADING,
   };
 };
 
 // Clear profile
 export const clearCurrentProfile = () => {
   return {
-    type: CLEAR_CURRENT_PROFILE
+    type: CLEAR_CURRENT_PROFILE,
   };
 };
