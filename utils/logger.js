@@ -13,9 +13,7 @@ const winstonLogger = createLogger({
     }),
     printf(
       ({ message, timestamp, name }) =>
-        `${timestamp} <${name}> <pid:${process.pid}> <${
-          appConfig.nodeEnv
-        }> ${message}`,
+        `${timestamp} <${name}> <pid:${process.pid}> <${appConfig.nodeEnv}> ${message}`,
     ),
   ),
   transports: [new transports.Console()],
