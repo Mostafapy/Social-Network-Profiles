@@ -1,3 +1,4 @@
+# the following configuration in server folder .env file
 # DB
 MONGO_URI = <VALUE_GOES_HERE>
 
@@ -6,3 +7,11 @@ MONGO_URI = <VALUE_GOES_HERE>
 APP_NAME = <VALUE_GOES_HERE>
 APP_PORT = <VALUE_GOES_HERE>
 APP_NODE_ENV = <VALUE_GOES_HERE>
+
+
+# PATH FOR CONFIGURATION FILE
+APP_CONFIG_PATH = <VALUE_GOES_HERE>
+
+
+# the following configuration in client folder .env file
+SKIP_PREFLIGHT_CHECK= <VALUE_GOES_HERE>
