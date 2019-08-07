@@ -1,4 +1,14 @@
-require('dotenv').config();
+// choose which configuration file to run
+let configPath;
+// development
+if (process.env.APP_NODE_ENV === 'development') {
+  configPath = `${process.env.APP_CONFIG_PATH}/development.js`;
+} else {
+  // production
+  configPath = `${process.env.APP_CONFIG_PATH}/production.js`;
+}
+
+require('dotenv').config({ path: configPath });
 
 const express = require('express');
 const config = require('config');
