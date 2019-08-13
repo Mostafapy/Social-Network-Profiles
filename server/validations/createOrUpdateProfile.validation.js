@@ -30,7 +30,7 @@ const userRequestValidation = (req, res, next) => {
 
     const errStr = `${error.message}, (error path): ${error.path.join('.')}`;
 
-    return res.status(400).json({ errors: [...errStr] });
+    return res.status(400).json({ errors: [errStr] });
   }
 
   return next();
