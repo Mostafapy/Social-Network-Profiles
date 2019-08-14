@@ -88,14 +88,14 @@ const addLikesForPost = async (req, res) => {
       });
     }
 
-    const postLikes = await postCRUDLogic.addLike(retrievedPost, req.user.id);
-    if (postLikes === `liked before`) {
+    const post = await postCRUDLogic.addLike(retrievedPost, req.user.id);
+    if (post === `liked before`) {
       return res.status(400).json({
         msg: `Post has already liked`,
       });
     }
 
-    return res.json(postLikes);
+    return res.json(post);
   } catch (err) {
     logger.error('@addLikesForPost() [error: %0]', err.message);
 
@@ -114,18 +114,15 @@ const unlikePost = async (req, res) => {
       });
     }
 
-    const postLikes = await postCRUDLogic.unLikePosts(
-      retrievedPost,
-      req.user.id,
-    );
+    const post = await postCRUDLogic.unLikePosts(retrievedPost, req.user.id);
 
-    if (postLikes === `not liked before`) {
+    if (post === `not liked before`) {
       return res.status(400).json({
         msg: `this post hasn't yet liked`,
       });
     }
 
-    return res.json(postLikes);
+    return res.json(post);
   } catch (err) {
     logger.error('@unlikePost() [error: %0]', err.message);
 
@@ -142,7 +139,7 @@ const addCommentForPost = async (req, res) => {
       req.body.text,
     );
 
-    return res.status(200).json(post.comments);
+    return res.status(200).json(post);
   } catch (err) {
     logger.error('@addCommentForPost() [error: %0]', err.message);
 
@@ -150,18 +147,18 @@ const addCommentForPost = async (req, res) => {
   }
 };
 
-// [DELETE] api/post/uncomment/:postId/:commentId
+// [DELETE] api/post/comment/:postId/:commentId
 const removeCommentForPost = async (req, res) => {
   try {
-    const comments = await postCRUDLogic.uncommentPost(
+    const post = await postCRUDLogic.uncommentPost(
       req.user.id,
       req.params.postId,
       req.params.commentId,
     );
-    if (comments === 'not found') {
+    if (post === 'not found') {
       return res.status(404).json({ msg: 'Comment does not exit' });
     }
-    return res.json(comments);
+    return res.json(post);
   } catch (err) {
     logger.error('@removeCommentForPost() [error: %0]', err.message);
 
