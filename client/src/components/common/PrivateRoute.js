@@ -1,38 +1,27 @@
 import React from 'react';
-import classnames from 'classnames';
+import { Route, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-const SelectListGroup = ({ name, value, error, info, onChange, options }) => {
-  const selectOptions = options.map(option => (
-    <option key={option.label} value={option.value}>
-      {option.label}
-    </option>
-  ));
-  return (
-    <div className="form-group">
-      <select
-        className={classnames('form-control form-control-lg', {
-          'is-invalid': error,
-        })}
-        name={name}
-        value={value}
-        onChange={onChange}
-      >
-        {selectOptions}
-      </select>
-      {info && <small className="form-text text-muted">{info}</small>}
-      {error && <div className="invalid-feedback">{error}</div>}
-    </div>
-  );
+const PrivateRoute = ({ component: Component, auth, ...rest }) => (
+  <Route
+    {...rest}
+    render={props =>
+      auth.isAuthenticated === true ? (
+        <Component {...props} />
+      ) : (
+        <Redirect to="/login" />
+      )
+    }
+  />
+);
+
+PrivateRoute.propTypes = {
+  auth: PropTypes.object.isRequired
 };
 
-SelectListGroup.propTypes = {
-  name: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  info: PropTypes.string,
-  error: PropTypes.string,
-  onChange: PropTypes.func.isRequired,
-  options: PropTypes.array.isRequired,
-};
+const mapStateToProps = state => ({
+  auth: state.auth
+});
 
-export default SelectListGroup;
+export default connect(mapStateToProps)(PrivateRoute);
