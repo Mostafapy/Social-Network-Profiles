@@ -1,10 +1,13 @@
 const Joi = require('joi');
 
-const socialsSchema = Joi.string().uri({ scheme: ['https'] });
+const socialsSchema = Joi.string()
+  .uri({ scheme: ['https'] })
+  .allow('');
 
 const createOrUpdateProfileRequestValidation = Joi.object()
   .required()
   .keys({
+    handle: Joi.string().required(),
     status: Joi.string().required(),
     skills: Joi.string().required(),
     company: Joi.string(),
