@@ -86,7 +86,7 @@ const createOrUpdateProfile = async (id, fields) => {
 const getAllUserProfile = async () => {
   try {
     const profile = await profileModel
-      .findOne()
+      .find()
       .populate('user', ['name', 'avatar']);
 
     return Promise.resolve(profile);
@@ -212,6 +212,25 @@ const deleteEducation = async (userId, eduId) => {
     );
   }
 };
+
+/**
+ * Function to retrieve user profile by handle
+ * @param {String} handleName
+ * @returns {Promise | Error}
+ */
+const getUserProfileByHandler = async handleName => {
+  try {
+    const retrievedProfile = await profileModel
+      .findOne({ handle: handleName })
+      .populate('user', ['name', 'avatar']);
+
+    return Promise.resolve(retrievedProfile);
+  } catch (err) {
+    logger.error('@getUserProfileByHandler() [error: %0]', err.message);
+
+    return Promise.reject(new Error('Cannot get user profile for this handle'));
+  }
+};
 module.exports = {
   getUserProfileById,
   createOrUpdateProfile,
@@ -222,4 +241,5 @@ module.exports = {
   addEducation,
   deleteEducation,
   getUserProfile,
+  getUserProfileByHandler,
 };
