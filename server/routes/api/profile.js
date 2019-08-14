@@ -8,11 +8,11 @@ const profileController = require('../../controllers/profileController');
 
 const router = express.Router();
 
-// [GET] api/profile/me
+// [GET] api/profile
 // @desc  Get current user profile
 // @access Private
 router.get(
-  '/me',
+  '/',
   isAuthorized,
   profileController.currentUserProfileRetrieverById,
 );
@@ -27,10 +27,10 @@ router.post(
   profileController.userProfileCreatorOrUpdater,
 );
 
-// [GET] api/profile
+// [GET] api/profile/all
 // @desc  Get all user profiles
 // @access Public
-router.get('/', profileController.allUserProfilesRetriever);
+router.get('/all', profileController.allUserProfilesRetriever);
 
 // [GET] api/profile/user/:user_Id
 // @desc  Get all user profiles
@@ -84,4 +84,9 @@ router.delete(
 // @desc  view github user profile
 // @access public
 router.get('/github/:username', profileController.getGithubReposForProfiles);
+
+// [GET] api/profile/handle/:handle
+// @desc  get profile by handler
+// @access public
+router.get('/handle/:handle', profileController.userProfileRetrieverByHandle);
 module.exports = router;
