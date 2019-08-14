@@ -173,7 +173,7 @@ const addEducation = async (id, educationFields) => {
   try {
     const profile = await profileModel.findOne({ user: id });
 
-    profile.experience.unshift(educationFields);
+    profile.education.unshift(educationFields);
 
     profile.save();
 
