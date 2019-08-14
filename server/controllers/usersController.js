@@ -8,7 +8,7 @@ const encryption = require('../utils/encryption');
 const userCRUDLogic = require('../logic/userCRUD');
 const logger = require('../utils/logger')('Controllers:UsersController');
 
-// [POST] api/users
+// [POST] api/users/register
 const userRegistration = async (req, res) => {
   const { name, email, password } = req.body;
   try {
@@ -47,4 +47,13 @@ const userRegistration = async (req, res) => {
   }
 };
 
-module.exports = { userRegistration };
+// [GET] api/users/current
+const retrieveCurrentUser = (req, res) => {
+  return res.json({
+    id: req.user.id,
+    name: req.user.name,
+    email: req.user.email,
+  });
+};
+
+module.exports = { userRegistration, retrieveCurrentUser };
