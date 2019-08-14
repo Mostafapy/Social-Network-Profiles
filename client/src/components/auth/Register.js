@@ -12,7 +12,7 @@ class Register extends Component {
       name: '',
       email: '',
       password: '',
-      password2: '',
+      confirmPassword: '',
       errors: {},
     };
 
@@ -43,7 +43,7 @@ class Register extends Component {
       name: this.state.name,
       email: this.state.email,
       password: this.state.password,
-      password2: this.state.password2,
+      confirmPassword: this.state.confirmPassword,
     };
 
     this.props.registerUser(newUser, this.props.history);
@@ -88,11 +88,11 @@ class Register extends Component {
                 />
                 <TextFieldGroup
                   placeholder="Confirm Password"
-                  name="password2"
+                  name="confirmPassword"
                   type="password"
-                  value={this.state.password2}
+                  value={this.state.confirmPassword}
                   onChange={this.onChange}
-                  error={errors.password2}
+                  error={errors.confirmPassword}
                 />
                 <input type="submit" className="btn btn-info btn-block mt-4" />
               </form>
