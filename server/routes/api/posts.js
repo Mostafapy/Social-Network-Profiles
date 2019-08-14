@@ -51,11 +51,11 @@ router.post(
   postController.addCommentForPost,
 );
 
-// [DELETE] api/posts/uncomment/:postId/:commentId
+// [DELETE] api/posts/comment/:postId/:commentId
 // @desc  comment on a post
 // @access Private
 router.delete(
-  '/uncomment/:postId/:comment:Id',
+  '/comment/:postId/:commentId',
   isAuthorized,
   postController.removeCommentForPost,
 );
