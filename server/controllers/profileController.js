@@ -19,7 +19,7 @@ const _request = options =>
     });
   });
 
-// [GET] api/profile/me
+// [GET] api/profile
 const currentUserProfileRetrieverById = async (req, res) => {
   try {
     const retrievedProfile = await profileCRUDLogic.getUserProfileById(
@@ -43,6 +43,7 @@ const currentUserProfileRetrieverById = async (req, res) => {
 // [POST] api/profile/
 const userProfileCreatorOrUpdater = async (req, res) => {
   const {
+    handle,
     company,
     website,
     location,
@@ -61,6 +62,7 @@ const userProfileCreatorOrUpdater = async (req, res) => {
 
     profileOBJ.user = req.user.id;
 
+    if (handle) profileOBJ.handle = handle;
     if (company) profileOBJ.company = company;
     if (youtube) profileOBJ.youtube = youtube;
     if (facebook) profileOBJ.facebook = facebook;
@@ -87,7 +89,7 @@ const userProfileCreatorOrUpdater = async (req, res) => {
   }
 };
 
-// [GET] api/profile/
+// [GET] api/profile/all
 const allUserProfilesRetriever = async (req, res) => {
   try {
     const allProfiles = await profileCRUDLogic.getAllUserProfile();
@@ -148,6 +150,7 @@ const deleteProfileWithUser = async (req, res) => {
 const addExperienceToProfile = async (req, res) => {
   const { title, company, location, from, to, current, description } = req.body;
 
+  console.log(req.body);
   const newExpOBJ = {
     title,
     company,
@@ -265,6 +268,24 @@ const getGithubReposForProfiles = async (req, res) => {
     return res.status(500).send('Server Error');
   }
 };
+
+// [GET] api/profile/handle/:handle
+const userProfileRetrieverByHandle = async (req, res) => {
+  try {
+    const profile = await profileCRUDLogic.getUserProfileByHandler(
+      req.params.handle,
+    );
+    if (!profile) {
+      res.status(404).json('No profile found for this handler');
+    }
+
+    res.json(profile);
+  } catch (err) {
+    logger.error('@userProfileRetrieverByHandle() [error: %0]', err.message);
+
+    return res.status(500).send('Server Error');
+  }
+};
 module.exports = {
   currentUserProfileRetrieverById,
   userProfileCreatorOrUpdater,
@@ -276,4 +297,5 @@ module.exports = {
   addEducationToProfile,
   deleteEducationFromProfile,
   getGithubReposForProfiles,
+  userProfileRetrieverByHandle,
 };
