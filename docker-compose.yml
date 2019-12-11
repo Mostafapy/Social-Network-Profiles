@@ -6,12 +6,13 @@ services:
   ##########################
   server:
     build: 
-     context: ./../
-     dockerfile: ./Social-Network-Profiles/server/Dockerfile
+     context: .
+     dockerfile: ./server/Dockerfile
     network_mode: host
+    env_file: .env
     restart: always
     volumes:
-      - ./../logs:/Social-Network-Profiles-Server/logs
+      - ./server/logs:/Social-Network-Profiles-Server/logs
     environment:
       - PORT=${APP_PORT}
       - NODE_ENV=${APP_NODE_ENV}
@@ -24,12 +25,13 @@ services:
   ### SETUP CLIENT CONTAINER
   ##########################
     build:
-      context: ./../
-      dockerfile: ./Social-Network-Profiles/client/Dockerfile
+      context: .
+      dockerfile: ./client/Dockerfile
+    env_file: .env
     ports:
-      - 3000:80
+      - 3000:3000
     volumes:
-      - ./logs:/Social-Network-Profiles-Client/src/img
+      - ./client/src/img:/Social-Network-Profiles-Client/src/img
     links:
       - server
     restart: always
