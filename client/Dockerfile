@@ -4,22 +4,22 @@ RUN mkdir -p /Social-Network-Profiles-Client
 
 WORKDIR /Social-Network-Profiles-Client
 
-ENV PATH /Social-Network-Profiles-Client/client/node_modules/.bin:$PATH
+ENV PATH /node_modules/.bin:$PATH
 
-COPY ./Social-Network-Profiles/client/package.json /Social-Network-Profiles-Client
+COPY ./client/package.json /Social-Network-Profiles-Client
 
 RUN  npm install
 
 RUN npm install react-scripts -g --silent
 
-COPY ./Social-Network-Profiles/ /Social-Network-Profiles-Client
+COPY . /Social-Network-Profiles-Client
 
 RUN npm run build --prefix client
 
 
 FROM nginx:1.17.2
 
-COPY ./Social-Network-Profiles/client/nginx.conf /etc/nginx/nginx.conf
+COPY ./client/nginx.conf /etc/nginx/nginx.conf
 
 RUN rm -rf /usr/share/nginx/html/*
 
