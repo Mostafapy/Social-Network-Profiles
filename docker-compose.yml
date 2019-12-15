@@ -13,6 +13,7 @@ services:
     restart: always
     volumes:
       - ./server/logs:/Social-Network-Profiles-Server/logs
+      - ./server/config:/Social-Network-Profiles-Server/config
     environment:
       - PORT=${APP_PORT}
       - NODE_ENV=${APP_NODE_ENV}
